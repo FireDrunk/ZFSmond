@@ -1,0 +1,38 @@
+<div class="panel panel-default">
+	<div class="panel-heading" >
+		<strong>Physical Disks</strong>
+	</div>
+	<div class="panel-body">
+		List of detected Physical Disks:
+	</div>
+	<table class="table table-striped table-condensed">
+		<tr>
+			<th>
+				Model:
+			</th>
+			<th>
+				Device Name:
+			</th>
+			<th>
+				Size / Real:
+			</th>
+			<th>
+				Serial:
+			</th>
+			<th>
+				Reallocated Sectors:
+			</th>
+			<th>
+				Get Smart:
+			</th>
+		</tr>
+		<tr ng-repeat="disk in disks | orderBy : 'name'">
+			<td>{{disk.model}}</td>
+			<td>{{disk.name}}</td>
+			<td>{{disk.size | bytes_1000}} / {{disk.size | bytes}}</td>
+			<td>{{disk.serial}}</td>
+			<td>{{smartinfo[disk.name]}}</td>
+			<td><button class="btn btn-default" type='button' ng-click="getSmart(disk.name)"> SMART </button></td>
+		</tr>
+	</table>
+</div>

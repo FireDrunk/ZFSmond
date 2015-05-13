@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- jQuery -->
+    <script src="/static/js/jquery.min.js"></script>
+    
+    <!-- AngularJS -->
+    <script src="/static/js/angular.min.js"></script>
+    <script src="/static/js/angular-route.js"></script>
+    <script src="/static/js/angular-animate.js"></script>
+    <script src="/static/js/angular-material.min.js"></script>
+    <script src="/static/js/angular-resource.min.js"></script>
+
+    <!-- AngularJS - Controller -->
+    <script src="/static/controllers/pools.js"></script>
+    <script src="/static/controllers/disks.js"></script>
+
+    <!-- AngularUI Bootstrap -->
+    <script src="/static/js/ui-bootstrap-tpls.min.js"></script>
+
+    <!-- AngularUI Router -->
+    <script src="/static/js/angular-ui-router.min.js"></script>
+
+    <!-- Bootstrap -->
+    <script src="/static/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+
+    <!-- Custom -->
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="/static/js/zfsmond.js"></script>
+</head>
+
+<body ng-app="zfsmond">
+
+<!-- Navigation -->
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">ZFSmond</a>
+    </div>
+    <div id="navbar" class="collapse navbar-collapse">
+      <ul class="nav navbar-nav">
+        <li ui-sref-active='active'> <a ui-sref="pools"> Pools </a> </li>
+        <li ui-sref-active='active'> <a ui-sref="disks"> Disks </a> </li>
+        <li ui-sref-active='active'> <a ui-sref="stats"> Stats </a> </li>
+      </ul>
+    </div>
+  </div>
+</nav>       
+
+<div style="margin-top: 60px;" class='container'>
+    <div ui-view></div>
+</div>
+
+</body>
+</html>
