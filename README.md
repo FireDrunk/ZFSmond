@@ -1,6 +1,13 @@
 # ZFSmond
 Tiny ZFS Web Interface written in AngularJS and Flask Restful
 
+## Prerequisites
+ZFS Installed
+Smartmontools installed
+libzfs-dev installed
+
+Python 2! (3 should work, but some dependancies don't support it)
+
 ##Installation:
 
 ```bash
