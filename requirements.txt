@@ -1,2 +1,2 @@
-pySMART
-pyudev
+pyudev==0.15
+pySMART==0.2
