@@ -31,5 +31,5 @@ api.add_resource(SmartInfo, '/api/smart/<string:disk>')
 # Start the application
 if __name__ == '__main__':
 	with LibZFSHandle():
-		app.run(host="192.168.1.3",
+		app.run(host="0.0.0.0",
     			port=5000)
