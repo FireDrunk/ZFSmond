@@ -1,2 +1,4 @@
 pyudev==0.15
 pySMART==0.2
+Flask==0.10.1
+Flask-RESTful==0.3.2
