@@ -20,10 +20,12 @@ api = restful.Api(app)
 # Models
 from models.disk import Disk
 from models.zfs import Pool
+from models.zfs import Filesystem
 from models.smart import SmartInfo
 
 api.add_resource(Pool, '/api/pools')
 api.add_resource(Disk, '/api/disks')
+api.add_resource(Filesystem, '/api/filesystems')
 api.add_resource(SmartInfo, '/api/smart/<string:disk>')
 
 #TODO: Stats
