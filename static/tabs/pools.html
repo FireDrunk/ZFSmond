@@ -1,21 +1,26 @@
 <div class="panel panel-default" ng-repeat="pool in poolCtrl.pools | orderBy : 'name'" ng-class="pool.isok ? 'panel-default' : 'panel-warning'" >
 	<div class="panel-heading" >
 		<div class="row">
-			<div class="col-md-3">
-				<h3>{{ pool.name | uppercase}}</h3>
+			<div class="col-md-12">
+				<h3> {{ pool.name | uppercase}} </h3>
 			</div>
-			<div class="col-md-9">
-				<span class="label label-success">State: {{ pool.state | uppercase }}</span>
-				<span class="label label-success">Status: {{ pool.status | uppercase }}</span>
-				<span class="label label-primary">Feature: Compression</span>
-				<span class="label label-primary">Feature: Deduplication</span>
+		</div>
+		<div class="row">
+			<div class="col-md-8">
+				<strong>Size:</strong> {{ pool.size | bytes}}
+			</div>
+			<div class="col-md-2">
+				<strong>State:</strong> <span class="label label-success">{{ pool.state | uppercase }}</span>
+			</div>
+			<div class="col-md-2">
+				<strong>Status:</strong> <span class="label label-success">{{ pool.status | uppercase }}</span>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-md-12">
 				<div class="progress" style="margin-top: 10px; margin-bottom: 10px;">
 					<div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{pool.capacity}}" aria-valuemin="0" aria-valuemax="100" style="width: {{pool.capacity}}%">
-				     <div class="pull-left">&nbsp;&nbsp;<strong>Size:</strong> {{ pool.size | bytes}}</div><div class="pull-right"><strong>Used:</strong> {{ pool.allocated | bytes}}&nbsp;&nbsp;</div>
+				     <div class="pull-left">&nbsp;&nbsp;</div><strong>Used:</strong> {{ pool.allocated | bytes}}
 				  </div>
 					<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{pool.capacity}}" aria-valuemin="0" aria-valuemax="100" style="width: {{100 - pool.capacity}}%">
 						<strong>Free:</strong> {{ pool.free | bytes}}
@@ -26,33 +31,24 @@
 
 	</div>
 	<div class="panel-body">
-		<div class="row">
-			<div class="col-md-12">
-				<h4 class="pull-left">Filesystems:</h4>
-			</div>
-		</div>
+		<strong>Devices (VDEV's):</strong>
 	</div>
-	<table class="table table-condensed table-striped">
+	<table class="table table-striped table-responsive" ng-repeat="vdev in pool.config.vdevs">
 		<tr>
-			<th>Name:</th>
-			<th>Available:</th>
-			<th>Referenced:</th>
-			<th>Used:</th>
-			<th>Snapshots:</th>
-			<th>Tags:</th>
+			<th>
+				<span class="label label-default">{{vdev.type | uppercase }} {{vdev.nparity}}</span>
+			</th>
 		</tr>
-		<tr ng-repeat="fs in pool.fs | orderBy : 'name'">
-			<td>{{ fs.name }}</td>
-			<td> {{ fs.available | bytes }} </td>
-			<td> {{ fs.referenced | bytes }} </td>
-			<td> {{ fs.used | bytes }} </td>
+		<tr ng-repeat="device in vdev.children">
 			<td>
-				<span ng-repeat="snap in fs.snaps" class='label label-success'>
-					{{snap.name}} <sup>{{snap.referenced | bytes}}</sup></span>
-			</td>
-			<td>
-				<span class="label label-primary">Compression</span>
-				<span class="label label-primary">Deduplication</span>
+				<div class="row">
+					<div class="col-md-1">
+						<div class="pull-right"><i class="fa fa-hdd-o fa-lg"></i></div>
+					</div>
+					<div class="col-md-11">
+						{{device.path}}
+					</div>
+				</div>
 			</td>
 		</tr>
 	</table>

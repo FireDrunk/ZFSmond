@@ -1,0 +1,22 @@
+<div class="panel panel-default" ng-repeat="pool in fsCtrl.pools | orderBy : 'name'">
+	<div class="panel-heading" >
+		<h3>{{ pool.name | uppercase}}</h3>
+	</div>
+	<div class="panel-body">
+		Test
+	</div>
+	<table class="table table-condensed table-striped">
+		<tr>
+			<th>Name:</th>
+			<th>Available:</th>
+			<th>Referenced:</th>
+			<th>Used:</th>
+		</tr>
+		<tr ng-repeat="fs in pool.fs | orderBy : 'name'">
+			<td>{{ fs.name }}</td>
+			<td>{{ fs.available | bytes }} </td>
+			<td>{{ fs.referenced | bytes }} </td>
+			<td>{{ fs.used | bytes }} </td>
+		</tr>
+	</table>
+</div>
