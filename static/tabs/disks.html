@@ -19,11 +19,29 @@
 			<th>
 				Serial:
 			</th>
+
+			<th>
+				Load Cycle Count:
+			</th>
+
+			<th>
+				Pending Sectors:
+			</th>
+
 			<th>
 				Reallocated Sectors:
 			</th>
+
 			<th>
-				Get Smart:
+				Temperature:
+			</th>
+
+			<th>
+				UDMA CRC Errors:
+			</th>
+
+			<th>
+				Load:
 			</th>
 		</tr>
 		<tr ng-repeat="disk in disks | orderBy : 'name'">
@@ -31,8 +49,30 @@
 			<td>{{disk.name}}</td>
 			<td>{{disk.size | bytes_1000}} / {{disk.size | bytes}}</td>
 			<td>{{disk.serial}}</td>
-			<td>{{smartinfo[disk.name]}}</td>
-			<td><button class="btn btn-default" type='button' ng-click="getSmart(disk.name)"> SMART </button></td>
+
+			<td>
+				{{ smartinfo[disk.name]['Load_Cycle_Count'] }}
+			</td>
+
+			<td>
+				{{ smartinfo[disk.name]['Current_Pending_Sector'] }}
+			</td>
+
+			<td>
+				{{ smartinfo[disk.name]['Reallocated_Sector_Ct'] }}
+			</td>
+
+			<td>
+				{{ smartinfo[disk.name]['Temperature_Celsius'] }}
+			</td>
+
+			<td>
+				{{ smartinfo[disk.name]['UDMA_CRC_Error_Count'] }}
+			</td>
+
+			<td>
+				<button class="btn btn-default" type='button' ng-click="getSmart(disk.name)"> SMART </button>
+			</td>
 		</tr>
 	</table>
 </div>
