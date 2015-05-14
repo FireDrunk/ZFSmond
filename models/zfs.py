@@ -24,7 +24,7 @@ class Pool(restful.Resource):
 
 	def generate_config(self, pool):
 		config = {}
-		config['raw'] = pool.config
+		#config['raw'] = pool.config
 		config['guid'] = pool.config['pool_guid']
 
 		#config['raw'] = pool.config
@@ -69,29 +69,30 @@ class Filesystem(restful.Resource):
 			fs = []
 			for raw_fs in zdataset.ZDataset.list():
 				fs_pool_name = raw_fs.name.split('/')[0]
-				for sub_fs in raw_fs.child_filesystems():
-					props = {key.name: value  for key, value in sub_fs.properties.items()}
+				if fs_pool_name == pool.name:
+					for sub_fs in raw_fs.child_filesystems():
+						props = {key.name: value  for key, value in sub_fs.properties.items()}
 
-					# Snapshots
-					snaps = []
-					for sub_snap in sub_fs.child_snapshots():
-						snap_props = {key.name: value  for key, value in sub_snap.properties.items()}
+						# Snapshots
+						snaps = []
+						for sub_snap in sub_fs.child_snapshots():
+							snap_props = {key.name: value  for key, value in sub_snap.properties.items()}
 
-						snaps.append(
+							snaps.append(
+								{
+									'name' : ''.join(sub_snap.name.split('/')[1:]),
+									'referenced' : snap_props['ZFS_PROP_REFERENCED'],
+									'used' : snap_props['ZFS_PROP_LOGICALUSED'],
+								})
+
+						fs.append(
 							{
-								'name' : ''.join(sub_snap.name.split('/')[1:]),
-								'referenced' : snap_props['ZFS_PROP_REFERENCED'],
-								'used' : snap_props['ZFS_PROP_LOGICALUSED'],
+								'name' : ''.join(sub_fs.name.split('/')[1:]),
+								'available' : props['ZFS_PROP_AVAILABLE'],
+								'referenced' : props['ZFS_PROP_REFERENCED'],
+								'used' : props['ZFS_PROP_LOGICALUSED'],
+								'snaps' : snaps
 							})
-
-					fs.append(
-						{
-							'name' : ''.join(sub_fs.name.split('/')[1:]),
-							'available' : props['ZFS_PROP_AVAILABLE'],
-							'referenced' : props['ZFS_PROP_REFERENCED'],
-							'used' : props['ZFS_PROP_LOGICALUSED'],
-							'snaps' : snaps
-						})
 			pools.append({
 				'name' : pool.name,
 				'fs' : fs
