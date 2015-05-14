@@ -30,14 +30,13 @@ def disk_list():
 			property_dict = dict(device.items())
 
 			if ('ID_MODEL' in property_dict):
-					disk_short_name = property_dict.get('DEVNAME', "Unknown").split('/')[-1]
-					disks.append(
-					{
-						'model':	property_dict.get('ID_MODEL', "Unknown"),
-						'name':		disk_short_name,
-						'size':		get_block_device_size(property_dict.get('DEVNAME', None)),
-						'rsec':		None,
-						'serial':	property_dict.get('ID_SERIAL_SHORT', "Unknown"),
-					})
+				disk_short_name = property_dict.get('DEVNAME', "Unknown").split('/')[-1]
+				disks.append(
+				{
+					'model':	property_dict.get('ID_MODEL', "Unknown"),
+					'name':		disk_short_name,
+					'size':		get_block_device_size(property_dict.get('DEVNAME', None)),
+					'serial':	property_dict.get('ID_SERIAL_SHORT', "Unknown"),
+				})
 
 	return disks
