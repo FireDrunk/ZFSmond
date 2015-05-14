@@ -1,4 +1,4 @@
-var app = angular.module('zfsmond', ['ui.bootstrap', 'ui.router','ngResource', 'zfsmond.pools', 'zfsmond.disks']);
+var app = angular.module('zfsmond', ['ui.bootstrap', 'ui.router','ngResource', 'zfsmond.pools','zfsmond.filesystems', 'zfsmond.disks']);
 
 app.config(function($stateProvider, $urlRouterProvider) {
 	$urlRouterProvider.otherwise("/pools")
@@ -7,6 +7,12 @@ app.config(function($stateProvider, $urlRouterProvider) {
 		url: "/pools",
 		templateUrl: "/static/tabs/pools.html",
 		controller: 'PoolsController as poolCtrl'
+	});
+
+	$stateProvider.state('filesystems', {
+		url: "/filesystems",
+		templateUrl: "/static/tabs/filesystems.html",
+		controller: 'FilesystemsController as fsCtrl'
 	});
 
 	$stateProvider.state('disks', {
