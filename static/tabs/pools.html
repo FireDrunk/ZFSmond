@@ -2,12 +2,15 @@
 	<div class="panel-heading" >
 		<div class="row">
 			<div class="col-md-12">
-				<h3> {{ pool.name | uppercase}} </h3>
+				<h3> {{ pool.name | uppercase}}</h3>
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-md-8">
+			<div class="col-md-4">
 				<strong>Size:</strong> {{ pool.size | bytes}}
+			</div>
+			<div class="col-md-4">
+				<strong>GUID: </strong>{{ pool.config.guid }}
 			</div>
 			<div class="col-md-2">
 				<strong>State:</strong> <span class="label label-success">{{ pool.state | uppercase }}</span>
@@ -46,7 +49,7 @@
 						<div class="pull-right"><i class="fa fa-hdd-o fa-lg"></i></div>
 					</div>
 					<div class="col-md-11">
-						{{device.path}}
+						{{device.name}}
 					</div>
 				</div>
 			</td>
