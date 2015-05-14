@@ -40,9 +40,8 @@ class Pool(restful.Resource):
 			# Test if this is a DATA vdev
 			children = vdev_config.get('children', None)
 
+			vdev_children = []
 			if children:
-				vdev_children = []
-
 				for child in vdev_config['children']:
 					vdev_children.append({
 							'type': child['type'],
