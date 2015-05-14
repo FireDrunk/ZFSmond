@@ -10,34 +10,41 @@
 			<th>
 				Model:
 			</th>
+
 			<th>
 				Device Name:
 			</th>
+
 			<th>
-				Size / Real:
+				Size:
 			</th>
+
+			<th>
+				Real:
+			</th>
+			
 			<th>
 				Serial:
 			</th>
 
 			<th>
-				Load Cycle Count:
+				LCC:
 			</th>
 
 			<th>
-				Pending Sectors:
+				PS:
 			</th>
 
 			<th>
-				Reallocated Sectors:
+				RS:
 			</th>
 
 			<th>
-				Temperature:
+				Temp:
 			</th>
 
 			<th>
-				UDMA CRC Errors:
+				CRC:
 			</th>
 
 			<th>
@@ -47,7 +54,8 @@
 		<tr ng-repeat="disk in disks | orderBy : 'name'">
 			<td>{{disk.model}}</td>
 			<td>{{disk.name}}</td>
-			<td>{{disk.size | bytes_1000}} / {{disk.size | bytes}}</td>
+			<td>{{disk.size | bytes_1000}}</td>
+			<td>{{disk.size | bytes}}</td>
 			<td>{{disk.serial}}</td>
 
 			<td>
