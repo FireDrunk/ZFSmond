@@ -6,39 +6,96 @@ from flask.ext import restful
 
 class Pool(restful.Resource):
 	def get(self):
-		return zpool_list()
+		pools = []
+		for raw_pool in zpool.ZPool.list():
+			pool_info = {}
+			#pool_info['guid'] = raw_pool.guid
+			pool_info['name'] = raw_pool.name
+			pool_info['state'] = zpool_state_to_str(raw_pool.state)
+			pool_info['status'] = zpool_status_to_str(raw_pool.status)
+			pool_info['size'] = raw_pool.properties[zpool_prop_t.ZPOOL_PROP_SIZE]
+			pool_info['allocated'] = raw_pool.properties[zpool_prop_t.ZPOOL_PROP_ALLOCATED]
+			pool_info['capacity'] = raw_pool.properties[zpool_prop_t.ZPOOL_PROP_CAPACITY]
+			pool_info['free'] = raw_pool.properties[zpool_prop_t.ZPOOL_PROP_FREE]
+			pool_info['isok'] = (pool_info['status'] == "Ok")
 
+			pool_info['config'] = self.generate_config(raw_pool)
 
-def get_filesystems_for_zpool(poolname):
-	fs = []
-	for raw_fs in zdataset.ZDataset.list():
-		fs_pool_name = raw_fs.name.split('/')[0]
+			pools.append(pool_info)
+		return pools
 
-		if ( fs_pool_name == poolname):
-			for sub_fs in raw_fs.child_filesystems():
-				props = {key.name: value  for key, value in sub_fs.properties.items()}
+	def generate_config(self, pool):
+		config = {}
+		#config['raw'] = pool.config
+		nr_of_vdevs = pool.config['vdev_children']
+		config['nr_of_vdevs'] = nr_of_vdevs
 
-				# Snapshots
-				snaps = []
-				for sub_snap in sub_fs.child_snapshots():
-					snap_props = {key.name: value  for key, value in sub_snap.properties.items()}
+		vdevs = []
+		for vdev_config in pool.config['vdev_tree']['children']:
+			# Skip weird vdev types
+			if vdev_config['type'] == 'hole':
+				continue
 
-					snaps.append(
-						{
-							'name' : ''.join(sub_snap.name.split('/')[1:]),
-							'referenced' : snap_props['ZFS_PROP_REFERENCED'],
-							'used' : snap_props['ZFS_PROP_LOGICALUSED'],
-						})
+			# Test if this is a DATA vdev
+			children = vdev_config.get('children', None)
 
-				fs.append(
-					{
-						'name' : ''.join(sub_fs.name.split('/')[1:]),
-						'available' : props['ZFS_PROP_AVAILABLE'],
-						'referenced' : props['ZFS_PROP_REFERENCED'],
-						'used' : props['ZFS_PROP_LOGICALUSED'],
-						'snaps' : snaps
+			if children:
+				vdev_children = []
+
+				for child in vdev_config['children']:
+					vdev_children.append({
+							'type': child['type'],
+							'path': child['path'],
+							'scan_stats': child['scan_stats']
 					})
-	return fs
+
+			vdevs.append({
+				'ashift' : vdev_config['ashift'],
+				'nparity' : vdev_config['nparity'],
+				'type' : vdev_config['type'],
+				'vdev_stats': vdev_config['vdev_stats'],
+				'children' : vdev_children
+			})
+
+		config['vdevs'] = vdevs
+
+		return config
+
+class Filesystem(restful.Resource):
+	def get(self):
+		pools = []
+		for pool in zpool.ZPool.list():
+			fs = []
+			for raw_fs in zdataset.ZDataset.list():
+				fs_pool_name = raw_fs.name.split('/')[0]
+				for sub_fs in raw_fs.child_filesystems():
+					props = {key.name: value  for key, value in sub_fs.properties.items()}
+
+					# Snapshots
+					snaps = []
+					for sub_snap in sub_fs.child_snapshots():
+						snap_props = {key.name: value  for key, value in sub_snap.properties.items()}
+
+						snaps.append(
+							{
+								'name' : ''.join(sub_snap.name.split('/')[1:]),
+								'referenced' : snap_props['ZFS_PROP_REFERENCED'],
+								'used' : snap_props['ZFS_PROP_LOGICALUSED'],
+							})
+
+					fs.append(
+						{
+							'name' : ''.join(sub_fs.name.split('/')[1:]),
+							'available' : props['ZFS_PROP_AVAILABLE'],
+							'referenced' : props['ZFS_PROP_REFERENCED'],
+							'used' : props['ZFS_PROP_LOGICALUSED'],
+							'snaps' : snaps
+						})
+			pools.append({
+				'name' : pool.name,
+				'fs' : fs
+			})
+		return pools
 
 #TODO: Change do dict!
 def zpool_state_to_str(state):
@@ -115,24 +172,3 @@ def zpool_status_to_str(status):
 		return "Ok"
 	else:
 		return "Not Implemented."
-
-
-#TODO: Build Sub Filesystem Recursion!
-def zpool_list():
-	pools = []
-
-	for raw_pool in zpool.ZPool.list():
-		pool_info = {}
-		#pool_info['guid'] = raw_pool.guid
-		pool_info['name'] = raw_pool.name
-		pool_info['state'] = zpool_state_to_str(raw_pool.state)
-		pool_info['status'] = zpool_status_to_str(raw_pool.status)
-		pool_info['size'] = raw_pool.properties[zpool_prop_t.ZPOOL_PROP_SIZE]
-		pool_info['allocated'] = raw_pool.properties[zpool_prop_t.ZPOOL_PROP_ALLOCATED]
-		pool_info['capacity'] = raw_pool.properties[zpool_prop_t.ZPOOL_PROP_CAPACITY]
-		pool_info['free'] = raw_pool.properties[zpool_prop_t.ZPOOL_PROP_FREE]
-		pool_info['isok'] = (pool_info['status'] == "Ok")
-		pool_info['fs'] = get_filesystems_for_zpool(raw_pool.name)
-
-		pools.append(pool_info)
-	return pools
