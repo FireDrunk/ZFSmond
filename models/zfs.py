@@ -52,7 +52,7 @@ class Pool(restful.Resource):
 
 			vdevs.append({
 				'ashift' : vdev_config['ashift'],
-				'nparity' : vdev_config['nparity'],
+				'nparity' : vdev_config.get('nparity', None),
 				'type' : vdev_config['type'],
 				'vdev_stats': vdev_config['vdev_stats'],
 				'children' : vdev_children
