@@ -9,7 +9,6 @@ class Pool(restful.Resource):
 		pools = []
 		for raw_pool in zpool.ZPool.list():
 			pool_info = {}
-			#pool_info['guid'] = raw_pool.guid
 			pool_info['name'] = raw_pool.name
 			pool_info['state'] = zpool_state_to_str(raw_pool.state)
 			pool_info['status'] = zpool_status_to_str(raw_pool.status)
@@ -18,7 +17,6 @@ class Pool(restful.Resource):
 			pool_info['capacity'] = raw_pool.properties[zpool_prop_t.ZPOOL_PROP_CAPACITY]
 			pool_info['free'] = raw_pool.properties[zpool_prop_t.ZPOOL_PROP_FREE]
 			pool_info['isok'] = (pool_info['status'] == "Ok")
-
 			pool_info['config'] = self.generate_config(raw_pool)
 
 			pools.append(pool_info)
@@ -26,6 +24,9 @@ class Pool(restful.Resource):
 
 	def generate_config(self, pool):
 		config = {}
+		config['raw'] = pool.config
+		config['guid'] = pool.config['pool_guid']
+
 		#config['raw'] = pool.config
 		nr_of_vdevs = pool.config['vdev_children']
 		config['nr_of_vdevs'] = nr_of_vdevs
@@ -45,7 +46,7 @@ class Pool(restful.Resource):
 				for child in vdev_config['children']:
 					vdev_children.append({
 							'type': child['type'],
-							'path': child['path'],
+							'name': ''.join(child['path'].split('/')[-1]),
 							'scan_stats': child['scan_stats']
 					})
 
