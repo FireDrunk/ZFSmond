@@ -1,6 +1,14 @@
 # ZFSmond
 Tiny ZFS Web Interface written in AngularJS and Flask Restful
 
+## Compatible Distributions
+* Fedora 21
+* Ubuntu 14.04
+
+## Incompatible Distributions (for now)
+* ArchLinux (comes with Python3 by default)
+* Ubuntu 12.04 (too old version of Smartmontools)
+
 ## Prerequisites
 * ZFS Installed (*NOT* the FUSE module)
 * smartmontools installed
