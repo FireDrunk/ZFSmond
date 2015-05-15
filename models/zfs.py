@@ -37,7 +37,7 @@ class Pool(restful.Resource):
 			if vdev_config['type'] == 'hole':
 				continue
 
-			# Test if this is a DATA vdev
+			# Test if the VDEV has children
 			children = vdev_config.get('children', None)
 
 			vdev_children = []
@@ -46,14 +46,20 @@ class Pool(restful.Resource):
 					vdev_children.append({
 							'type': child['type'],
 							'name': ''.join(child['path'].split('/')[-1]),
-							'scan_stats': child['scan_stats']
+							'scan_stats': child.get('scan_stats', None)
 					})
+			else:
+				vdev_children.append({
+						'type': vdev_config['type'],
+						'name': ''.join(vdev_config['path'].split('/')[-1]),
+						'scan_stats': vdev_config.get('scan_stats', None)
+				})
 
 			vdevs.append({
 				'ashift' : vdev_config['ashift'],
 				'nparity' : vdev_config.get('nparity', None),
 				'type' : vdev_config['type'],
-				'vdev_stats': vdev_config['vdev_stats'],
+				'vdev_stats': vdev_config.get('vdev_stats', None),
 				'children' : vdev_children
 			})
 
