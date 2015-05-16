@@ -34,7 +34,10 @@
 					<td>{{ smartinfo[disk.name]['Reallocated_Sector_Ct'] }}</td>
 					<td>{{ smartinfo[disk.name]['Temperature_Celsius'] }}</td>
 					<td>{{ smartinfo[disk.name]['UDMA_CRC_Error_Count'] }}</td>
-					<td><button class="btn btn-default" type='button' ng-click="getSmart(disk.name)"> SMART </button></td>
+					<td>
+						<button class="btn btn-default" type='button' ng-click="getSmart(disk.name)"> SMART </button><br>
+						<label class="label label-default" ng-show="smartinfo[disk.name].error">Error loading smart</label>
+					</td>
 				</tr>
 			</tbody>
 		</table>
