@@ -5,82 +5,38 @@
 	<div class="panel-body">
 		List of detected Physical Disks:
 	</div>
-	<table class="table table-striped table-condensed">
-		<tr>
-			<th>
-				Model:
-			</th>
-
-			<th>
-				Device Name:
-			</th>
-
-			<th>
-				Size:
-			</th>
-
-			<th>
-				Real:
-			</th>
-			
-			<th>
-				Serial:
-			</th>
-
-			<th>
-				LCC:
-			</th>
-
-			<th>
-				PS:
-			</th>
-
-			<th>
-				RS:
-			</th>
-
-			<th>
-				Temp:
-			</th>
-
-			<th>
-				CRC:
-			</th>
-
-			<th>
-				Load:
-			</th>
-		</tr>
-		<tr ng-repeat="disk in disks | orderBy : 'name'">
-			<td>{{disk.model}}</td>
-			<td>{{disk.name}}</td>
-			<td>{{disk.size | bytes_1000}}</td>
-			<td>{{disk.size | bytes}}</td>
-			<td>{{disk.serial}}</td>
-
-			<td>
-				{{ smartinfo[disk.name]['Load_Cycle_Count'] }}
-			</td>
-
-			<td>
-				{{ smartinfo[disk.name]['Current_Pending_Sector'] }}
-			</td>
-
-			<td>
-				{{ smartinfo[disk.name]['Reallocated_Sector_Ct'] }}
-			</td>
-
-			<td>
-				{{ smartinfo[disk.name]['Temperature_Celsius'] }}
-			</td>
-
-			<td>
-				{{ smartinfo[disk.name]['UDMA_CRC_Error_Count'] }}
-			</td>
-
-			<td>
-				<button class="btn btn-default" type='button' ng-click="getSmart(disk.name)"> SMART </button>
-			</td>
-		</tr>
-	</table>
+	<div class="table-responsive">
+		<table class="table table-consdensed">
+			<thead>
+				<tr>
+					<th> Model:</th>
+					<th> Device Name:</th>
+					<th> Size:	</th>
+					<th> Real:	</th>
+					<th> Serial: </th>
+					<th> LCC:</th>
+					<th> PS:</th>
+					<th> RS:</th>
+					<th> Temp:</th>
+					<th> CRC:</th>
+					<th> Load:</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="disk in disks | orderBy : 'name'">
+					<td>{{ disk.model }}</td>
+					<td>{{ disk.name }}</td>
+					<td>{{ disk.size | bytes_1000 }}</td>
+					<td>{{ disk.size | bytes }}</td>
+					<td>{{ disk.serial }}</td>
+					<td>{{ smartinfo[disk.name]['Load_Cycle_Count'] }}</td>
+					<td>{{ smartinfo[disk.name]['Current_Pending_Sector'] }}</td>
+					<td>{{ smartinfo[disk.name]['Reallocated_Sector_Ct'] }}</td>
+					<td>{{ smartinfo[disk.name]['Temperature_Celsius'] }}</td>
+					<td>{{ smartinfo[disk.name]['UDMA_CRC_Error_Count'] }}</td>
+					<td><button class="btn btn-default" type='button' ng-click="getSmart(disk.name)"> SMART </button></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 </div>
