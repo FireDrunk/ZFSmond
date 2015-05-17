@@ -32,6 +32,9 @@ python main.py
 ```
 Point your browser to: http://[ip]:5000
 
+## Screenshots
+https://github.com/FireDrunk/ZFSmond/wiki/Screenshots
+
 ## Alpha
 Please be aware that this is pre-alpha software!
 This software is *NOT* fit for any purpose other than seeing fancy colors!
