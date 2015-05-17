@@ -4,6 +4,7 @@ Tiny ZFS Web Interface written in AngularJS and Flask Restful
 ## Compatible Distributions
 * Fedora 21
 * Ubuntu 14.04
+* OpenSUSE
 
 ## Incompatible Distributions (for now)
 * ArchLinux (comes with Python3 by default)
@@ -12,6 +13,7 @@ Tiny ZFS Web Interface written in AngularJS and Flask Restful
 ## Prerequisites
 * ZFS Installed (*NOT* the FUSE module)
 * smartmontools installed
+* GCC
 * libffi
 * libffi-dev / libffi-devel (Depends on distro)
 * libzfs-dev installed
