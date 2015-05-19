@@ -1,1 +1,42 @@
-Stats Tab
+<div class="panel panel-default">
+	<div class="panel-heading" >
+		<h3>IO Stats:</h3>
+	</div>
+	<div class="panel-body">
+		Pools:
+	</div>
+	<table class="table table-condensed table-striped">
+		<thead>
+      <tr>
+        <th>
+          Pool:
+        </th>
+        <th>
+          Read Operations:
+        </th>
+        <th>
+          Write Operations:
+        </th>
+        <th>
+          Read Bandwith:
+        </th>
+        <th>
+          Write Bandwith:
+        </th>
+				<th>
+					Raw:
+				</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="stat in statsCtrl.stats">
+				<td>{{ stat.pool_name }}</td>
+        <td>{{ stat.read_ops }}</td>
+        <td>{{ stat.write_ops }}</td>
+        <td>{{ stat.read_bandwith }}</td>
+        <td>{{ stat.write_bandwith }}</td>
+				<td>{{ stat.raw }}</td>
+      </tr>
+    </tbody>
+	</table>
+</div>
