@@ -3,6 +3,7 @@ from libzfs import zpool
 from libzfs.zpool import zpool_prop_t
 from libzfs import zdataset
 from flask.ext import restful
+import time
 
 class Pool(restful.Resource):
 	def get(self):
@@ -26,6 +27,7 @@ class Pool(restful.Resource):
 		config = {}
 		#config['raw'] = pool.config
 		config['guid'] = pool.config['pool_guid']
+		config['scrub'] = self.get_scan_status(pool.config['vdev_tree']['children'][0].get('scan_stats', None))
 
 		#config['raw'] = pool.config
 		nr_of_vdevs = pool.config['vdev_children']
@@ -45,14 +47,14 @@ class Pool(restful.Resource):
 				for child in vdev_config['children']:
 					vdev_children.append({
 							'type': child['type'],
+							'path': child['path'],
 							'name': ''.join(child['path'].split('/')[-1]),
-							'scan_stats': child.get('scan_stats', None)
 					})
 			else:
 				vdev_children.append({
 						'type': vdev_config['type'],
+						'path': vdev_config['path'],
 						'name': ''.join(vdev_config['path'].split('/')[-1]),
-						'scan_stats': vdev_config.get('scan_stats', None)
 				})
 
 			vdevs.append({
@@ -66,6 +68,25 @@ class Pool(restful.Resource):
 		config['vdevs'] = vdevs
 
 		return config
+	def get_scan_status(self, stats):
+	    if stats is None:
+			return {"state" : "none requested"}
+	    else:
+			(func, state, start_time, end_time, to_examine, examined, to_process,processed, errors, pass_examined, pass_start) = stats
+			return {
+					'func' : func,
+					'state' : state,
+					'start_time' : start_time,
+					'elapsed' : int(time.time()) - start_time,
+					'end_time' : end_time,
+					'to_examine' : to_examine,
+					'examined' : examined,
+					'to_process' : to_process,
+					'processed' : processed,
+					'errors' : errors,
+					'pass_examined' : pass_examined,
+					'pass_start' : pass_start
+					}
 
 class Filesystem(restful.Resource):
 	def get(self):
