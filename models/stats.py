@@ -2,6 +2,7 @@ from flask.ext import restful
 from pySMART import Device
 from libzfs.zpool import ZPool
 from libzfs import bindings
+import time
 
 ## From the ZFSonLinux Git repo:
 #
@@ -25,8 +26,9 @@ from libzfs import bindings
 
 
 class Stats(restful.Resource):
-    def get(self):
+    pool_stats = {}
 
+    def get(self):
         zio_type_t = bindings['zio_type_t']
 
         stats = []
@@ -46,7 +48,7 @@ class Stats(restful.Resource):
                     (read_errors, write_errors, checksum_errors, self_healed, scan_removing, scan_processed, fragmentation) = raw_stats[20:27]
                 else:
                     (read_errors, write_errors, checksum_errors, self_healed, scan_removing, scan_processed) = raw_stats[20:26]
-                stat['timestamp'] = timestamp
+                stat['timestamp'] = int(time.time())
                 stat['state'] = state
                 stat['aux'] = aux
                 stat['alloc'] = alloc
@@ -65,25 +67,22 @@ class Stats(restful.Resource):
                 stat['self_healed'] = self_healed
                 stat['scan_removing'] = scan_removing
                 stat['scan_processed'] = scan_processed
-
                 stat['fragmentation'] = fragmentation
 
+                if self.pool_stats.has_key(pool.name):
+                    stat['diff'] = self.get_diff(self.pool_stats[pool.name], stat)
+
                 stats.append(stat)
+
+                self.pool_stats[pool.name] = stat
         return stats
 
-        # return [
-        #             {
-        #                 'pool_name': 'archive',
-        #                 'read_ops' : '10',
-        #                 'write_ops' : '10',
-        #                 'read_bandwith' : '100',
-        #                 'write_bandwith' : '100',
-        #             },
-        #             {
-        #                 'pool_name': 'test',
-        #                 'read_ops' : '10',
-        #                 'write_ops' : '10',
-        #                 'read_bandwith' : '100',
-        #                 'write_bandwith' : '100',
-        #             }
-        # ]
+    def get_diff(self, old_stats, new_stats):
+        diff = {}
+        diff['timestamp'] = int(time.time())
+        diff['elapsed'] = new_stats['timestamp'] - old_stats['timestamp']
+        diff['read_operations'] =   new_stats['zio_ops']['ZIO_TYPE_READ'] -    old_stats['zio_ops']['ZIO_TYPE_READ']
+        diff['write_operations'] =  new_stats['zio_ops']['ZIO_TYPE_WRITE'] -   old_stats['zio_ops']['ZIO_TYPE_WRITE']
+        diff['read_bandwith'] =     new_stats['zio_bytes']['ZIO_TYPE_READ'] -   old_stats['zio_bytes']['ZIO_TYPE_READ']
+        diff['write_bandwith'] =    new_stats['zio_bytes']['ZIO_TYPE_WRITE'] -  old_stats['zio_bytes']['ZIO_TYPE_WRITE']
+        return diff
