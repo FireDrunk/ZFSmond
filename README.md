@@ -12,7 +12,7 @@ Tiny ZFS Web Interface written in AngularJS and Flask Restful
 
 ## Prerequisites
 * ZFS Installed (*NOT* the FUSE module)
-* smartmontools installed
+* smartmontools installed (i have 6.2 installed)
 * GCC
 * libffi
 * libffi-dev / libffi-devel (Depends on distro)
