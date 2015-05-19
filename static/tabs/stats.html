@@ -23,19 +23,15 @@
         <th>
           Write Bandwith:
         </th>
-				<th>
-					Raw:
-				</th>
       </tr>
     </thead>
     <tbody>
       <tr ng-repeat="stat in statsCtrl.stats">
 				<td>{{ stat.pool_name }}</td>
-        <td>{{ stat.read_ops }}</td>
-        <td>{{ stat.write_ops }}</td>
-        <td>{{ stat.read_bandwith }}</td>
-        <td>{{ stat.write_bandwith }}</td>
-				<td>{{ stat.raw }}</td>
+        <td>{{ stat.diff.read_operations }}</td>
+        <td>{{ stat.diff.write_operations }}</td>
+        <td>{{ stat.diff.read_bandwith | bytes}}</td>
+        <td>{{ stat.diff.write_bandwith | bytes }}</td>
       </tr>
     </tbody>
 	</table>
