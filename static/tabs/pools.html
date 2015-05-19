@@ -6,16 +6,16 @@
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-md-4">
+			<div class="col-md-3">
 				<strong>Size:</strong> {{ pool.size | bytes}}
 			</div>
-			<div class="col-md-4">
+			<div class="col-md-3">
 				<strong>GUID: </strong>{{ pool.config.guid }}
 			</div>
-			<div class="col-md-2">
+			<div class="col-md-3" style="text-align: center;">
 				<strong>State:</strong> <span class="label label-success">{{ pool.state | uppercase }}</span>
 			</div>
-			<div class="col-md-2">
+			<div class="col-md-3" style="text-align: center;">
 				<strong>Status:</strong> <span class="label label-success">{{ pool.status | uppercase }}</span>
 			</div>
 		</div>
@@ -31,15 +31,46 @@
 				</div>
 			</div>
 		</div>
-
 	</div>
+	<table class="table table-striped table-responsive table-condensed table-bordered" ng-show="pool.config.scrub.state != 'none requested'">
+			<thead>
+				<th>Scrub:</th>
+				<th>Started:</th>
+				<th>Runtime:</th>
+				<th ng-show="pool.config.scrub.end_time > 0">Finish:</th>
+
+				<th>Scanned:</th>
+				<th>Total:</th>
+
+				<th>Errors:</th>
+		</thead>
+		<tbody>
+			<tr class="{{pool.config.scrub.state | scrub_state_to_class}}">
+				<td>{{pool.config.scrub.state | scrub_state_to_text}}</td>
+
+				<td>{{pool.config.scrub.start_time * 1000 | date : 'medium'}}</td>
+				<td>{{pool.config.scrub.elapsed | time_to_text}}</td>
+				<td ng-show="pool.config.scrub.end_time > 0">{{ pool.config.scrub.end_time * 1000 | date : 'medium' }}</td>
+
+				<td>{{pool.config.scrub.examined | bytes}}</td>
+				<td>{{pool.config.scrub.to_examine | bytes}}</td>
+
+				<td ng-show="pool.config.scrub.errors > 0">
+					<font color="red">{{pool.config.scrub.errors }}</font>
+				</td>
+				<td ng-hide="pool.config.scrub.errors > 0">
+					{{pool.config.scrub.errors }}
+				</td>
+			</tr>
+		</tbody>
+	</table>
 	<div class="panel-body">
-		<strong>Devices (VDEV's):</strong>
+	This pool consists of the following VDEV's / Devices:
 	</div>
 	<table class="table table-condensed table-striped table-responsive" ng-repeat="vdev in pool.config.vdevs">
 		<tr>
 			<th>
-				<span class="label label-default">{{vdev.type | uppercase }} {{vdev.nparity}}</span>
+				<label class="label label-default">{{vdev.type | uppercase }} {{vdev.nparity}}</label>
 			</th>
 		</tr>
 		<tr ng-repeat="device in vdev.children">
@@ -49,7 +80,7 @@
 						<div class="pull-right"><i class="fa fa-hdd-o fa-lg"></i></div>
 					</div>
 					<div class="col-md-11">
-						{{device.name}}
+						<abbr title="{{device.path}}">{{device.name}}</abbr>
 					</div>
 				</div>
 			</td>
