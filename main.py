@@ -22,13 +22,16 @@ from models.disk import Disk
 from models.zfs import Pool
 from models.zfs import Filesystem
 from models.smart import SmartInfo
+from models.stats import Stats
+from models.update import Update
 
+# URL Definitions
 api.add_resource(Pool, '/api/pools')
 api.add_resource(Disk, '/api/disks')
 api.add_resource(Filesystem, '/api/filesystems')
 api.add_resource(SmartInfo, '/api/smart/<string:disk>')
-
-#TODO: Stats
+api.add_resource(Stats, '/api/stats')
+api.add_resource(Update, '/api/update')
 
 # Start the application
 if __name__ == '__main__':
