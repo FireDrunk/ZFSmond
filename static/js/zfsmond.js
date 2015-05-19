@@ -30,9 +30,10 @@ app.config(function($stateProvider, $urlRouterProvider) {
 
 app.filter('bytes', function() {
 	return function(bytes, precision) {
+		if (bytes == 0) return 0;
 		if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '-';
 		if (typeof precision === 'undefined') precision = 1;
-		var units = ['bytes', 'kB', 'MB', 'GB', 'TB', 'PB'],
+		var units = ['bytes', 'kiB', 'MiB', 'GiB', 'TiB', 'PiB'],
 			number = Math.floor(Math.log(bytes) / Math.log(1024));
 		return (bytes / Math.pow(1024, Math.floor(number))).toFixed(precision) +  ' ' + units[number];
 	}
@@ -40,6 +41,7 @@ app.filter('bytes', function() {
 
 app.filter('bytes_1000', function() {
 	return function(bytes, precision) {
+		if (bytes == 0) return 0;
 		if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '-';
 		if (typeof precision === 'undefined') precision = 1;
 		var units = ['bytes', 'kB', 'MB', 'GB', 'TB', 'PB'],
@@ -53,7 +55,7 @@ app.filter('scrub_state_to_text', function() {
 		switch(state) {
 			case 2: return "Finished";
 			case 1: return "Running";
-			default: return "Unkown"
+			default: return "Unknown"
 		}
 	}
 });
