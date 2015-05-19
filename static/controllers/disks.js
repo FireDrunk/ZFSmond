@@ -13,6 +13,7 @@ angular.module('zfsmond.disks',[])
 				console.log('Error retreiving disk information from API!');
 			});
 		var http = $http;
+		
 		$scope.getSmart = function(dev) {
 			console.log("Smart button pressed! (" + dev +")");
 			http.get('/api/smart/' + dev).success(function(smart_response){
