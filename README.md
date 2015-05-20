@@ -25,7 +25,7 @@ Tiny ZFS Web Interface written in AngularJS and Flask Restful
 ```bash
 git clone https://github.com/FireDrunk/ZFSmond.git zfsmond
 pip install -r requirements.txt
-pip install https://github.com/Xaroth/libzfs-python.git@zpool-config
+pip install git+https://github.com/Xaroth/libzfs-python.git@zpool-config
 python main.py
 ```
 Point your browser to: http://[ip]:5000
