@@ -60,6 +60,15 @@ app.filter('scrub_state_to_text', function() {
 	}
 });
 
+app.filter('vdev_state_to_text', function() {
+	return function(state){
+		switch(state){
+			case 'VDEV_STATE_HEALTHY': return "Online";
+			default: return "Unknown";
+		}
+	}
+});
+
 app.filter('scrub_state_to_class', function() {
 	return function(state) {
 			switch (state) {
