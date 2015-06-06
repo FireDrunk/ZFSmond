@@ -1,0 +1,11 @@
+import libzfs
+from libzfs.handle import LibZFSHandle
+from libzfs.zdataset import *
+from libzfs.zpool import *
+
+LibZFSHandle.init()
+
+pools = ZPool.list()
+first_pool = pools[0]
+first_pool_config = first_pool.config
+fs = ZDataset.get(first_pool.name)
