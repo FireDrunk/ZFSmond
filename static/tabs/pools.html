@@ -65,25 +65,38 @@
 		</tbody>
 	</table>
 	<div class="panel-body">
-	This pool consists of the following VDEV's / Devices:
+		VDEV's:
 	</div>
-	<table class="table table-condensed table-striped table-responsive" ng-repeat="vdev in pool.config.vdevs">
+	<table class="table table-striped table-responsive table-condensed table-bordered" ng-repeat="vdev in pool.config.vdevs">
 		<tr>
-			<th>
-				<label class="label label-default">{{vdev.type | uppercase }} {{vdev.nparity}}</label>
-			</th>
+			<thead>
+				<!-- Parity -->
+				<th class="col-md-2">
+					<label class="label label-success">{{vdev.type | uppercase }} {{vdev.nparity}}</label>
+				</th>
+				<!-- Path -->
+				<th class="col-md-4">
+					Path
+				</th>
+				<!-- State -->
+				<th class="col-md-2">
+					<span class="label label-success">{{vdev.vdev_stats.state.name | vdev_state_to_text}}</span>
+				</th>
+				<!-- Stats -->
+				<th class="col-md-2">
+					<abbr title="Checksum Errors">{{vdev.vdev_stats.checksum_errors}}</abbr>
+				</th>
+				<th class="col-md-2">
+					<abbr title="Read Errors">{{vdev.vdev_stats.read_errors}}</abbr>
+				</th>
+			</thead>
 		</tr>
 		<tr ng-repeat="device in vdev.children">
-			<td>
-				<div class="row">
-					<div class="col-md-1">
-						<div class="pull-right"><i class="fa fa-hdd-o fa-lg"></i></div>
-					</div>
-					<div class="col-md-11">
-						<abbr title="{{device.path}}">{{device.name}}</abbr>
-					</div>
-				</div>
-			</td>
+			<td class="col-md-2"><sub>└</sub> <i class="fa fa-hdd-o fa-lg"></i></td>
+			<td class="col-md-4"><abbr title="{{device.path}}">{{device.name}}</abbr></td>
+			<td class="col-md-2"><sub>└</sub> <span class="label label-success">{{device.vdev_stats.state.name | vdev_state_to_text}}</span></td>
+			<td class="col-md-2"><abbr title="Checksum Errors">{{device.vdev_stats.checksum_errors}}</abbr></td>
+			<td class="col-md-2"><abbr title="Read Errors">{{device.vdev_stats.read_errors}}</abbr></td>
 		</tr>
 	</table>
 </div>
