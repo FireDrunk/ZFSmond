@@ -1,14 +1,14 @@
 from libzfs import *
-from libzfs import zpool
-from libzfs.zpool import zpool_prop_t
-from libzfs import zdataset
+from libzfs.zpool import *
+from libzfs.zdataset import *
+from libzfs.utils.jsonify import *
 from flask.ext import restful
 import time
 
 class Pool(restful.Resource):
 	def get(self):
 		pools = []
-		for raw_pool in zpool.ZPool.list():
+		for raw_pool in ZPool.list():
 			pool_info = {}
 			pool_info['name'] = raw_pool.name
 			pool_info['state'] = zpool_state_to_str(raw_pool.state)
@@ -26,99 +26,90 @@ class Pool(restful.Resource):
 	def generate_config(self, pool):
 		config = {}
 		#config['raw'] = pool.config
-		config['guid'] = pool.config['pool_guid']
-		config['scrub'] = self.get_scan_status(pool.config['vdev_tree']['children'][0].get('scan_stats', None))
+		config['guid'] = pool.config.guid
+		config['scrub'] = pool.config.vdev_tree.scan_stats
 
 		#config['raw'] = pool.config
-		nr_of_vdevs = pool.config['vdev_children']
+		nr_of_vdevs = len(pool.config.vdev_tree.children)
+
 		config['nr_of_vdevs'] = nr_of_vdevs
 
 		vdevs = []
-		for vdev_config in pool.config['vdev_tree']['children']:
+		for vdev_config in pool.config.vdev_tree.children:
 			# Skip weird vdev types
-			if vdev_config['type'] == 'hole':
+			if vdev_config.type == 'hole':
 				continue
 
 			# Test if the VDEV has children
-			children = vdev_config.get('children', None)
-
 			vdev_children = []
-			if children:
-				for child in vdev_config['children']:
+			if vdev_config.children:
+				for child in vdev_config.children:
 					vdev_children.append({
-							'type': child['type'],
-							'path': child['path'],
-							'name': ''.join(child['path'].split('/')[-1]),
+							'type': child.type,
+							'path': child.path,
+							'name': ''.join(child.path.split('/')[-1]),
+							'vdev_stats': jsonify(child.vdev_stats, parse_enums=PARSE_BOTH)
 					})
 			else:
 				vdev_children.append({
-						'type': vdev_config['type'],
-						'path': vdev_config['path'],
-						'name': ''.join(vdev_config['path'].split('/')[-1]),
+						'type': vdev_config.type,
+						'path': vdev_config.path,
+						'name': ''.join(vdev_config.path.split('/')[-1]),
+						'vdev_stats': jsonify(vdev_config.vdev_stats, parse_enums=PARSE_BOTH)
 				})
 
 			vdevs.append({
-				'ashift' : vdev_config['ashift'],
-				'nparity' : vdev_config.get('nparity', None),
-				'type' : vdev_config['type'],
-				'vdev_stats': vdev_config.get('vdev_stats', None),
+				'ashift' : vdev_config.ashift,
+				'nparity' : vdev_config.nparity,
+				'type' : vdev_config.type,
+				'vdev_stats': jsonify(vdev_config.vdev_stats, parse_enums=PARSE_BOTH),
 				'children' : vdev_children
 			})
 
 		config['vdevs'] = vdevs
 
 		return config
-	def get_scan_status(self, stats):
-	    if stats is None:
-			return {"state" : "none requested"}
-	    else:
-			(func, state, start_time, end_time, to_examine, examined, to_process,processed, errors, pass_examined, pass_start) = stats
-			return {
-					'func' : func,
-					'state' : state,
-					'start_time' : start_time,
-					'elapsed' : int(time.time()) - start_time,
-					'end_time' : end_time,
-					'to_examine' : to_examine,
-					'examined' : examined,
-					'to_process' : to_process,
-					'processed' : processed,
-					'errors' : errors,
-					'pass_examined' : pass_examined,
-					'pass_start' : pass_start
-					}
 
 class Filesystem(restful.Resource):
 	def get(self):
 		pools = []
-		for pool in zpool.ZPool.list():
+		for pool in ZPool.list():
 			fs = []
-			for raw_fs in zdataset.ZDataset.list():
-				fs_pool_name = raw_fs.name.split('/')[0]
-				if fs_pool_name == pool.name:
-					for sub_fs in raw_fs.child_filesystems():
-						props = {key.name: value  for key, value in sub_fs.properties.items()}
+			root_fs = ZDataset.get(pool.name)
 
-						# Snapshots
-						snaps = []
-						for sub_snap in sub_fs.child_snapshots():
-							snap_props = {key.name: value  for key, value in sub_snap.properties.items()}
+			# Append the root filesystem
+			root_fs._properties = jsonify(root_fs.properties)
 
-							snaps.append(
-								{
-									'name' : ''.join(sub_snap.name.split('/')[1:]),
-									'referenced' : snap_props['ZFS_PROP_REFERENCED'],
-									'used' : snap_props['ZFS_PROP_LOGICALUSED'],
-								})
+			fs.append(
+				{
+					'name' : root_fs.name,
+					'available' : root_fs.properties['available'],
+					'referenced' : root_fs.properties['referenced'],
+					'used' : root_fs.properties['used'],
+				})
 
-						fs.append(
-							{
-								'name' : ''.join(sub_fs.name.split('/')[1:]),
-								'available' : props['ZFS_PROP_AVAILABLE'],
-								'referenced' : props['ZFS_PROP_REFERENCED'],
-								'used' : props['ZFS_PROP_LOGICALUSED'],
-								'snaps' : snaps
-							})
+			for sub_fs in root_fs.child_filesystems:
+				# Snapshots
+				snaps = []
+				for sub_snap in sub_fs.child_snapshots:
+					sub_snap._properties = jsonify(sub_snap.properties)
+
+					snaps.append(
+						{
+							'name' : sub_snap.name,
+							'referenced' : sub_snap.properties['referenced'],
+							'used' : sub_snap.properties['used'],
+						})
+				sub_fs._properties = jsonify(sub_fs.properties)
+
+				fs.append(
+					{
+						'name' : sub_fs.name,
+						'available' : sub_fs.properties['available'],
+						'referenced' : sub_fs.properties['referenced'],
+						'used' : sub_fs.properties['used'],
+						'snaps' : snaps
+					})
 			pools.append({
 				'name' : pool.name,
 				'fs' : fs
