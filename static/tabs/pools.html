@@ -75,28 +75,32 @@
 					<label class="label label-success">{{vdev.type | uppercase }} {{vdev.nparity}}</label>
 				</th>
 				<!-- Path -->
-				<th class="col-md-4">
+				<th class="col-md-3">
 					Path
 				</th>
 				<!-- State -->
-				<th class="col-md-2">
+				<th class="col-md-1">
 					<span class="label label-success">{{vdev.vdev_stats.state.name | vdev_state_to_text}}</span>
 				</th>
 				<!-- Stats -->
 				<th class="col-md-2">
-					<abbr title="Checksum Errors">{{vdev.vdev_stats.checksum_errors}}</abbr>
+					<abbr title="Read Errors">{{vdev.vdev_stats.read_errors}}</abbr>
 				</th>
 				<th class="col-md-2">
-					<abbr title="Read Errors">{{vdev.vdev_stats.read_errors}}</abbr>
+					<abbr title="Write Errors">{{vdev.vdev_stats.write_errors}}</abbr>
+				</th>
+				<th class="col-md-2">
+					<abbr title="Checksum Errors">{{vdev.vdev_stats.checksum_errors}}</abbr>
 				</th>
 			</thead>
 		</tr>
 		<tr ng-repeat="device in vdev.children">
 			<td class="col-md-2"><sub>└</sub> <i class="fa fa-hdd-o fa-lg"></i></td>
-			<td class="col-md-4"><abbr title="{{device.path}}">{{device.name}}</abbr></td>
-			<td class="col-md-2"><sub>└</sub> <span class="label label-success">{{device.vdev_stats.state.name | vdev_state_to_text}}</span></td>
-			<td class="col-md-2"><abbr title="Checksum Errors">{{device.vdev_stats.checksum_errors}}</abbr></td>
+			<td class="col-md-3"><abbr title="{{device.path}}">{{device.name}}</abbr></td>
+			<td class="col-md-1"><sub>└</sub> <span class="label label-success">{{device.vdev_stats.state.name | vdev_state_to_text}}</span></td>
 			<td class="col-md-2"><abbr title="Read Errors">{{device.vdev_stats.read_errors}}</abbr></td>
+			<td class="col-md-2"><abbr title="Write Errors">{{device.vdev_stats.write_errors}}</abbr></td>
+			<td class="col-md-2"><abbr title="Checksum Errors">{{device.vdev_stats.checksum_errors}}</abbr></td>
 		</tr>
 	</table>
 </div>
