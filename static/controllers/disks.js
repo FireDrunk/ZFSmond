@@ -19,6 +19,9 @@ angular.module('zfsmond.disks',[])
 			http.get('/api/smart/' + dev).success(function(smart_response){
 				$scope.smartinfo[dev] = smart_response;
 				console.log("SMART Info: " + smart_response);
+			}).
+			error(function(data, status, headers, config) {
+				$scope.smartinfo[dev].error = true;
 			});
 		};
 
