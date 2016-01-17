@@ -16,7 +16,7 @@
 				<strong>State:</strong> <span class="label label-success">{{ pool.state | uppercase }}</span>
 			</div>
 			<div class="col-md-3" style="text-align: center;">
-				<strong>Status:</strong> <span class="label label-success">{{ pool.status | uppercase }}</span>
+				<strong>Status:</strong> <span class="label" ng-class="{ 'label-danger': pool.status_color == 'error', 'label-warning': pool.status_color == 'warning', 'label-info': pool.status_color == 'info', 'label-success': pool.status_color == 'ok' }">{{ pool.status | uppercase }}</span>
 			</div>
 		</div>
 		<div class="row">
