@@ -1,13 +1,29 @@
 #!/usr/bin/python
 
 # Imports
+import os
+import sys
+import argparse
+import json
 from flask import Flask, send_from_directory
 from flask.ext import restful
 from libzfs.handle import LibZFSHandle
 
+# Parse arguments
+argparser = argparse.ArgumentParser(description='ZFSmond Server Application')
+argparser.add_argument('-c', '--config', help='Configuration file to load')
+arguments = argparser.parse_args()
+
+# Load configuration
+if arguments.config != None:
+	with open(arguments.config) as config_file:
+		config = json.load(config_file)
+else:
+	config = {}
+
 #Define Flask Application
-app = Flask(__name__,static_url_path="/static")
-app.debug = True
+app = Flask(__name__, static_url_path='/static')
+app.debug = config.get('debug', False)
 
 # MAIN Application Route (Serves AngularJS Main)
 @app.route('/')
@@ -35,5 +51,8 @@ api.add_resource(Update, '/api/update')
 
 # Start the application
 if __name__ == '__main__':
-		with LibZFSHandle():
-			app.run(host="0.0.0.0",port=5000)
+	with LibZFSHandle():
+		app.run(host=config.get('host', '0.0.0.0'), port=config.get('port', 5000))
+
+# vim: ts=4 sw=4 sts=4 noet
+
