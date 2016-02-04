@@ -1,15 +1,23 @@
 angular.module('zfsmond.filesystems',[])
-	.controller('FilesystemsController', function($http) {
-		var fsCtrl = this
-		this.pools = []
+	.controller('FilesystemsController', ['$scope','$http','$interval',function($scope, $http, $interval) {
+		$scope.pools = []
 
-		$http.get('/api/filesystems').
-			success(function(data, status, headers, config)
-			{
-				fsCtrl.pools = data;
-			}).
-			error(function(data, status, headers, config) {
-				console.log('Error!')
-			});
+		var filesystems_updater = function() {
+			$http.get('/api/filesystems').
+				success(function(data, status, headers, config)
+				{
+					$scope.pools = data
+				}).
+				error(function(data, status, headers, config)
+				{
+					console.log('Could not fetch updates!')
+				});
+		};
+		var filesystems_interval = $interval(filesystems_updater, 1000);
+		filesystems_updater();
 
-	});
+		$scope.$on('$destroy', function() {
+			$interval.cancel(filesystems_interval);
+		});
+	}]);
+
