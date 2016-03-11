@@ -12,11 +12,21 @@
 			<th>Referenced:</th>
 			<th>Used:</th>
 		</tr>
-		<tr ng-repeat="fs in pool.fs | orderBy : 'name'">
-			<td>{{ fs.name }}</td>
-			<td>{{ fs.available | bytes }} </td>
-			<td>{{ fs.referenced | bytes }} </td>
-			<td>{{ fs.used | bytes }} </td>
-		</tr>
+		<tbody ng-repeat="fs in (fss = (pool.fs | orderBy: 'name'))">
+			<tr>
+				<td>{{ fs.type != 'Pool' ? (fss[$index + 1] != undefined ? '├' : '└') : '' }}<span class="fa" ng-class="{ 'fa-database': fs.type == 'Pool', 'fa-hdd-o': fs.type == 'Volume', 'fa-folder-open': fs.type == 'Filesystem' }"> {{ fs.name }}</span></td>
+				<td>{{ fs.available | bytes }} </td>
+				<td>{{ fs.referenced | bytes }} </td>
+				<td>{{ fs.used | bytes }} </td>
+			</tr>
+				<!-- TODO: What about bookmarks? -->
+				<tr ng-repeat="snap in fs.snaps">
+					<td>{{ fss[$index + 1] != undefined ? '│' : '' }} {{ fs.snaps[$index + 1] != undefined ? '├' : '└' }}<span class="fa fa-clock-o"> {{ snap.name }}</span></td>
+					<td>-</td>
+					<td>{{ snap.referenced | bytes }}</td>
+					<td>{{ snap.used | bytes }}</td>
+				</tr>
+			</tr>
+		</tbody>
 	</table>
 </div>

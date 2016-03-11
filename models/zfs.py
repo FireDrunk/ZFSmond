@@ -83,6 +83,7 @@ class Filesystem(restful.Resource):
 			fs.append(
 				{
 					'name' : root_fs.name,
+					'type': 'Pool',
 					'available' : root_fs.properties['available'],
 					'referenced' : root_fs.properties['referenced'],
 					'used' : root_fs.properties['used'],
@@ -105,6 +106,7 @@ class Filesystem(restful.Resource):
 				fs.append(
 					{
 						'name' : sub_fs.name,
+						'type' : fs_type_to_str(sub_fs.type),
 						'available' : sub_fs.properties['available'],
 						'referenced' : sub_fs.properties['referenced'],
 						'used' : sub_fs.properties['used'],
@@ -191,3 +193,21 @@ def zpool_status_to_str(status):
 		return "Ok"
 	else:
 		return "Not Implemented."
+
+#TODO: Change to dict!
+def fs_type_to_str(type):
+	if type == zfs_type_t.ZFS_TYPE_FILESYSTEM:
+		return "Filesystem"
+	if type == zfs_type_t.ZFS_TYPE_SNAPSHOT:
+		return "Snapshot"
+	if type == zfs_type_t.ZFS_TYPE_VOLUME:
+		return "Volume"
+	if type == zfs_type_t.ZFS_TYPE_POOL:
+		return "Pool"
+	if type == zfs_type_t.ZFS_TYPE_BOOKMARK:
+		return "Bookmark"
+	else:
+		return "Unknown"
+
+# vim: ts=4 sw=4 sts=4 noet
+
