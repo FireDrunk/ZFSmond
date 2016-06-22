@@ -5,6 +5,7 @@ import os
 import sys
 import argparse
 import json
+import logging
 from flask import Flask, send_from_directory
 from flask.ext import restful
 from libzfs.handle import LibZFSHandle
@@ -24,6 +25,7 @@ else:
 #Define Flask Application
 app = Flask(__name__, static_url_path='/static')
 app.debug = config.get('debug', False)
+logging.getLogger("werkzeug").setLevel(logging.ERROR)
 
 # MAIN Application Route (Serves AngularJS Main)
 @app.route('/')
