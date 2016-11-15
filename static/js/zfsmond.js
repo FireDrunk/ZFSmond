@@ -5,25 +5,25 @@ app.config(function($stateProvider, $urlRouterProvider) {
 
 	$stateProvider.state('pools', {
 		url: "/pools",
-		templateUrl: "/static/tabs/pools.html",
+		templateUrl: "static/tabs/pools.html",
 		controller: 'PoolsController as poolCtrl'
 	});
 
 	$stateProvider.state('filesystems', {
 		url: "/filesystems",
-		templateUrl: "/static/tabs/filesystems.html",
+		templateUrl: "static/tabs/filesystems.html",
 		controller: 'FilesystemsController as fsCtrl'
 	});
 
 	$stateProvider.state('disks', {
 		url: "/disks",
-		templateUrl: "/static/tabs/disks.html",
+		templateUrl: "static/tabs/disks.html",
 		controller: 'DisksController as diskCtrl'
 	});
 
 	$stateProvider.state('stats', {
 		url: "/stats",
-		templateUrl: "/static/tabs/stats.html",
+		templateUrl: "static/tabs/stats.html",
 		controller: 'StatsController as statsCtrl'
 	});
 });

@@ -3,7 +3,7 @@ angular.module('zfsmond.filesystems',[])
 		$scope.pools = []
 
 		var filesystems_updater = function() {
-			$http.get('/api/filesystems').
+			$http.get('api/filesystems').
 				success(function(data, status, headers, config)
 				{
 					$scope.pools = data

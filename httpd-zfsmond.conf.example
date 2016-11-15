@@ -1,0 +1,15 @@
+#Apache configuration to proxy ZFSmond
+
+#Module dependencies
+# mod_rewrite
+# mod_proxy
+# mod_proxy_http
+<Location /zfsmond>
+    Require all granted
+</Location>
+
+#The last / is required
+Redirect permanent /zfsmond /zfsmond/
+
+ProxyPass "/zfsmond/" "http://127.0.0.1:5000/"
+ProxyPassReverse "/zfsmond/" "http://127.0.0.1:5000/"
