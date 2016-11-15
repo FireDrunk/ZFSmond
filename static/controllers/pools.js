@@ -7,7 +7,7 @@ angular.module('zfsmond.pools',[])
 		}
 
 		var pools_updater = function() {
-			$http.get('/api/pools').
+			$http.get('api/pools').
 				success(function(data, status, headers, config) 
 				{
 					$scope.pools = data;

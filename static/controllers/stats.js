@@ -3,7 +3,7 @@ angular.module('zfsmond.stats',[])
 		$scope.stats = []
 
 		var stats_updater = function() {
-			$http.get('/api/stats').
+			$http.get('api/stats').
 				success(function(data, status, headers, config)
 				{
 					$scope.stats = data
