@@ -5,6 +5,8 @@
 # mod_proxy
 # mod_proxy_http
 <Location /zfsmond>
+    # New authorization commands for apache 2.4 and up
+    # http://httpd.apache.org/docs/2.4/upgrading.html#access
     Require all granted
 </Location>
 
