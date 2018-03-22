@@ -1,3 +1,13 @@
+## ATTENTION
+This software has been abondoned, and is currently not working.
+The ffi module for python has not been updated to ZFS 0.7 and is not working correctly
+Also the installer is shacky with new Python dependency problems.
+
+TODO before this works:
+- Fix build
+- Fix Python dependencies (2 -> 3)
+- Update libffi or implement JSON ZFS Output bindings
+
 # ZFSmond
 Tiny ZFS Web Interface written in AngularJS and Flask Restful
 
